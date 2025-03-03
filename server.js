@@ -5,7 +5,7 @@ const port = process.env.PORT || 8080;
 
 cors_proxy.createServer({
   originWhitelist: [], // Allow all origins
-  requireHeader: [], // ✅ FIXED: No required headers
+  requireHeader: [], 
   removeHeaders: [
     'cookie',
     'cookie2',
@@ -17,8 +17,15 @@ cors_proxy.createServer({
   ],
   redirectSameOrigin: true,
   httpProxyOptions: {
-    xfwd: false
+    xfwd: false,
+    changeOrigin: true
   },
+  checkRequest: function(origin, url, callback) {
+    if (!/^https?:\/\//.test(url)) {
+      return callback(new Error('Invalid host: ' + url));
+    }
+    callback(null, url);
+  }
 }).listen(port, host, function() {
-  console.log(`✅ CORS Proxy Running on ${host}:${port}`);
+  console.log(`Running CORS Anywhere on ${host}:${port}`);
 });
