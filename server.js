@@ -5,7 +5,7 @@ const port = process.env.PORT || 8080;
 
 cors_proxy.createServer({
   originWhitelist: [], // Allow all origins
-  requireHeader: [], // 🔹 FIXED: Removed required headers
+  requireHeader: [], // ✅ FIXED: No required headers
   removeHeaders: [
     'cookie',
     'cookie2',
