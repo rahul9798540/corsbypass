@@ -1,8 +1,9 @@
 const corsAnywhere = require("cors-anywhere");
 
+// Configure CORS Anywhere
 const proxy = corsAnywhere.createServer({
   originWhitelist: [], // Allow all origins
-  requireHeader: [], // No restrictions
+  requireHeader: [],
   removeHeaders: [
     "cookie",
     "cookie2",
@@ -19,26 +20,21 @@ const proxy = corsAnywhere.createServer({
   }
 });
 
-// Main function to handle requests
 module.exports = (req, res) => {
-  let targetUrl = req.url.slice(1); // Remove leading `/`
-  
-  if (!targetUrl.startsWith("http")) {
+  // Extract the actual target URL from the request
+  const targetUrl = req.url.replace(/^\/api\//, ""); // Fix extra prefix issue
+
+  if (!/^https?:\/\//.test(targetUrl)) {
     res.writeHead(400, { "Content-Type": "text/plain" });
     return res.end("Error: Provide a valid URL after the domain (e.g., /https://example.com)");
   }
 
   console.log("Proxying request to:", targetUrl);
 
-  // Set request URL to match CORS Anywhere's expected format
+  // Correct the request format for CORS Anywhere
   req.url = "/" + targetUrl;
-
-  // Ensure response headers allow CORS
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
-  res.setHeader("Access-Control-Allow-Headers", "X-Requested-With, Content-Type");
-
   proxy.emit("request", req, res);
 };
+
 
 
