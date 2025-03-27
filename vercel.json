@@ -1,15 +1,8 @@
 {
-  "version": 2,
-  "builds": [
+  "rewrites": [
     {
-      "src": "api/index.js",
-      "use": "@vercel/node"
+      "source": "/2504/:file",
+      "destination": "https://linearjitp-playback.astro.com.my/dash-wv/linear/2504/:file"
     }
-  ],
-  "routes": [
-    { "src": "/(.*)", "dest": "/api/index.js" }
   ]
 }
-
-
-
