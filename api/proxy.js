@@ -1,6 +1,6 @@
 export default async function handler(req, res) {
-  const url = `https://linearjitp-playback.astro.com.my/dash-wv/linear/2504/default_ott.mpd`;
-  
+  const url = "https://linearjitp-playback.astro.com.my/dash-wv/linear/2504/default_ott.mpd";
+
   try {
     const response = await fetch(url, {
       headers: {
@@ -11,13 +11,13 @@ export default async function handler(req, res) {
     });
 
     if (!response.ok) {
-      return res.status(404).send("Not Found");
+      return res.status(response.status).send("Failed to fetch MPD");
     }
 
     const data = await response.text();
     res.setHeader("Content-Type", "application/dash+xml");
     res.send(data);
   } catch (error) {
-    res.status(500).send("Error fetching MPD file");
+    res.status(500).send("Server Error");
   }
 }
