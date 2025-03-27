@@ -10,22 +10,17 @@ const proxy = corsAnywhere.createServer({
     "x-request-id",
     "via",
     "connect-time",
-    "total-route-time",
+    "total-route-time"
   ],
   redirectSameOrigin: true,
   httpProxyOptions: {
     xfwd: false,
-    changeOrigin: true,
-  },
-  checkRequest: function (origin, url, callback) {
-    if (!/^https?:\/\//.test(url)) {
-      return callback(new Error("Invalid host: " + url));
-    }
-    callback(null, url);
-  },
+    changeOrigin: true
+  }
 });
 
 module.exports = (req, res) => {
-  req.url = req.url.replace(/^\/api/, ""); // Remove `/api` prefix
+  req.url = req.url.replace(/^\/api/, ""); // Adjust path for Vercel API
+  req.headers["x-forwarded-for"] = req.connection.remoteAddress; // Improve proxy behavior
   proxy.emit("request", req, res);
 };
