@@ -1,11 +1,16 @@
+import fetch from "node-fetch";
+import HttpsProxyAgent from "https-proxy-agent";
+
 export default async function handler(req, res) {
   const targetUrl = "https://linearjitp-playback.astro.com.my/dash-wv/linear/2504/default_ott.mpd";
   const proxyUrl = "http://103.3.64.1:8080"; // Change this to a working SG proxy
 
   try {
+    const agent = new HttpsProxyAgent(proxyUrl);
+
     const response = await fetch(targetUrl, {
       method: "GET",
-      agent: new require("https-proxy-agent")(proxyUrl), // Ensure requests use the proxy
+      agent: agent, // Use the proxy agent
       headers: {
         "X-Forwarded-For": "103.3.64.1",
         "User-Agent": "Mozilla/5.0 (Linux; Android 10; SM-G977N)",
