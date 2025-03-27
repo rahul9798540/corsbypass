@@ -19,8 +19,9 @@ const proxy = corsAnywhere.createServer({
   }
 });
 
+// Main function to handle requests
 module.exports = (req, res) => {
-  const targetUrl = req.url.slice(1); // Remove leading `/`
+  let targetUrl = req.url.slice(1); // Remove leading `/`
   
   if (!targetUrl.startsWith("http")) {
     res.writeHead(400, { "Content-Type": "text/plain" });
@@ -28,7 +29,16 @@ module.exports = (req, res) => {
   }
 
   console.log("Proxying request to:", targetUrl);
-  req.url = "/" + targetUrl; // Fix request format for CORS Anywhere
+
+  // Set request URL to match CORS Anywhere's expected format
+  req.url = "/" + targetUrl;
+
+  // Ensure response headers allow CORS
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "X-Requested-With, Content-Type");
+
   proxy.emit("request", req, res);
 };
+
 
